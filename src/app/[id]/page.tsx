@@ -1,7 +1,7 @@
 import { getSecret } from "~/server/actions/secrets";
 import { notFound, redirect } from "next/navigation";
 import DisplaySecret from "~/app/[id]/display-secret";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import { getBaseUrl } from "~/lib/utils";
 
 interface PageProps {
