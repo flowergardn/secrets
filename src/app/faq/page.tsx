@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
 export default function FaqPage() {
   const questions = [
@@ -94,6 +95,11 @@ export default function FaqPage() {
         <p className="text-xl">
           here are some frequently asked questions about the app
         </p>
+        <Link href="/" className="w-full">
+          <Button variant="outline">
+            back to home
+          </Button>
+        </Link>
         <hr className="border-border" />
         <div className="flex flex-col gap-4">
           {questions.map((question) => (
