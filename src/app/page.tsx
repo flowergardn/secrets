@@ -9,14 +9,19 @@ export default function HomePage() {
         <h1 className="text-3xl font-bold">secrets</h1>
         <p className="text-xl">an app to create and share temporary secrets</p>
         <CreateButton />
-        <Link href="https://github.com/flowergardn/secrets">
-          <Button variant="outline" className="w-full">
-            github
-          </Button>
-        </Link>
+        <section className="flex flex-row gap-4 w-full">
+          <Link href="https://github.com/flowergardn/secrets" className="w-1/2">
+            <Button variant="outline" className="w-full">
+              github
+            </Button>
+          </Link>
+          <Link href="/faq" className="w-1/2">
+            <Button variant="outline" className="w-full">
+              faq
+            </Button>
+          </Link>
+        </section>
       </section>
     </main>
   );
 }
-
-
