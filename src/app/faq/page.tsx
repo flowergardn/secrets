@@ -89,7 +89,7 @@ export default function FaqPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-white">
-      <section className={"mx-8 flex w-2/4 flex-col gap-4 md:mx-0"}>
+      <section className="mx-8 flex w-full md:w-2/4 flex-col gap-4 md:mx-0">
         <h1 className="text-3xl font-bold">faq</h1>
         <p className="text-xl">
           here are some frequently asked questions about the app
