@@ -34,6 +34,7 @@ export default function FaqPage() {
           <Link href="/" className="underline">
             home page
           </Link>
+          .
         </>
       ),
     },
