@@ -55,23 +55,6 @@ export default function FaqPage() {
         "yes, secrets are encrypted server-side using AES-256-CBC with a random IV per secret.",
     },
     {
-      question: "but the plaintext is sent to the server, how is it secure?",
-      answer: (
-        <>
-          while this could be a flaw, the server is only storing the encrypted
-          content - you can audit our{" "}
-          <Link
-            href="https://github.com/flowergardn/secrets"
-            className="underline"
-          >
-            source code
-          </Link>{" "}
-          to make sure we&#39;re not storing or leaking any sensitive
-          information.
-        </>
-      ),
-    },
-    {
       question: "how can i donate?",
       answer: (
         <>
