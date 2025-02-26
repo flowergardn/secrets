@@ -4,6 +4,7 @@ import { Redis } from "@upstash/redis";
 import { nanoid } from "nanoid";
 import crypto from "crypto";
 import { env } from "~/env";
+import { verifyTurnstile } from "~/server/turnstile";
 
 function encryptContent(text: string): string {
   const key = Buffer.from(env.ENCRYPTION_KEY, "hex");
@@ -36,7 +37,17 @@ function decryptContent(encryptedData: string): string {
   return decrypted;
 }
 
-export default async function createSecret(text: string, ex: number) {
+export default async function createSecret(
+  text: string,
+  ex: number,
+  turnstileToken: string,
+) {
+  const verifyToken = await verifyTurnstile(turnstileToken);
+  if (!verifyToken.success) throw new Error("Invalid turnstile token");
+
+  if (ex < 0) throw new Error("Expiration time must be greater than 0");
+  if (ex > 3600) throw new Error("Expiration time must be less than 1 hour");
+
   const redis = Redis.fromEnv();
   const id = nanoid();
 

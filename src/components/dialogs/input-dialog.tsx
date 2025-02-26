@@ -15,6 +15,8 @@ import { Button } from "~/components/ui/button";
 import type { ControllerRenderProps, UseFormReturn } from "react-hook-form";
 import { Form, FormField } from "~/components/ui/form";
 import { LoaderCircle } from "lucide-react";
+import Turnstile, { useTurnstile } from "react-turnstile";
+import { env } from "~/env";
 
 export default function InputDialog<T>({
   form,
@@ -26,6 +28,7 @@ export default function InputDialog<T>({
   onClose,
   formCSS = "",
   footer,
+  requireCaptcha = false,
 }: {
   form: UseFormReturn<any, any, undefined>;
   fields: {
@@ -35,24 +38,31 @@ export default function InputDialog<T>({
   title: ReactNode;
   message?: ReactNode;
   id: string;
-  callback: (data: T) => Promise<void> | void;
+  callback: (data: T, turnstileToken?: string | null) => Promise<void> | void;
   onClose?: () => void;
   formCSS?: string;
   footer?: ReactNode;
+  requireCaptcha?: boolean;
 }) {
   const [openModal, setModal] = useAtom(inputModalState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstile = useTurnstile();
 
   useEffect(() => {
     if (openModal === id) return;
     form.reset();
     form.clearErrors();
+    setTurnstileToken(null);
   }, [openModal, id, form]);
 
   const handleSubmit = async (data: T) => {
     setIsSubmitting(true);
-    await callback(data);
-    setIsSubmitting(false);
+    try {
+      await callback(data, turnstileToken);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
@@ -82,6 +92,9 @@ export default function InputDialog<T>({
                 ))}
               </section>
               {footer}
+              {requireCaptcha && (
+                <Turnstile sitekey={env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} onVerify={setTurnstileToken} />
+              )}
               <div className="float-right space-x-4">
                 <Button
                   variant="outline"
@@ -90,7 +103,11 @@ export default function InputDialog<T>({
                 >
                   Close
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || (requireCaptcha && !turnstileToken)}
+                >
                   {isSubmitting ? (
                     <LoaderCircle className="animate-spin" />
                   ) : (

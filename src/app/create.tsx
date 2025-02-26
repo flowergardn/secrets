@@ -23,6 +23,7 @@ const formSchema = z.object({
 type CallbackData = z.infer<typeof formSchema>;
 
 function CreateModal() {
+  const [, setInputModal] = useAtom(inputModalState);
   const form = useForm<CallbackData>({
     resolver: zodResolver(formSchema),
   });
@@ -68,16 +69,27 @@ function CreateModal() {
             title="Create your secret"
             form={form}
             fields={inputFields}
-            callback={async (data) => {
-              await createSecret(data.secret, parseInt(data.expiry))
+            callback={async (data, turnstileToken) => {
+              if(!turnstileToken) {
+                toast.error("Please complete the captcha");
+                return;
+              }
+
+              await createSecret(
+                data.secret,
+                parseInt(data.expiry),
+                turnstileToken,
+              )
                 .then(async (id) => {
                   copy(`${getBaseUrl()}/${id}`);
+                  setInputModal(null);
                   toast("Copied link to clipboard");
                 })
                 .catch((e: Error) => {
                   toast.error(e.message);
                 });
             }}
+            requireCaptcha
           />
         </div>
       </section>
